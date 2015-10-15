@@ -46,20 +46,7 @@ namespace NuGet.PackageManagement.UI
 
             if (dependency != null)
             {
-                if (dependency.VersionRange.MinVersion == dependency.VersionRange.MaxVersion)
-                {
-                    InstalledVersion = string.Format(
-                        CultureInfo.CurrentCulture,
-                        Resources.Text_InstalledVersion,
-                        dependency.VersionRange.MinVersion);
-                }
-                else
-                {
-                    InstalledVersion = string.Format(
-                        CultureInfo.CurrentCulture,
-                        Resources.Text_InstalledVersion,
-                        dependency.VersionRange.ToNormalizedString());
-                }
+                InstalledVersion = dependency.VersionRange.MinVersion;
             }
             else
             {
@@ -130,7 +117,7 @@ namespace NuGet.PackageManagement.UI
             var latestPrerelease = allVersions.FirstOrDefault(v => v.IsPrerelease);
             var latestStableVersion = allVersions.FirstOrDefault(v => !v.IsPrerelease);
 
-            if (SelectedAction == Resources.Action_Uninstall)
+            if (SelectedAction == Resources.Button_Uninstall)
             {
                 _versions.Add(new VersionForDisplay(installedDependency.VersionRange, string.Empty));
             }
@@ -158,7 +145,7 @@ namespace NuGet.PackageManagement.UI
                     _versions.Add(new VersionForDisplay(version, string.Empty));
                 }
             }
-            else if (SelectedAction == Resources.Action_Upgrade)
+            else if (SelectedAction == Resources.Button_Upgrade)
             {
                 if (latestStableVersion != null
                     && latestStableVersion != installedVersion)
@@ -196,9 +183,9 @@ namespace NuGet.PackageManagement.UI
             // no-op
         }
 
-        private string _installedVersion;
+        private NuGetVersion _installedVersion;
 
-        public string InstalledVersion
+        public NuGetVersion InstalledVersion
         {
             get { return _installedVersion; }
             private set

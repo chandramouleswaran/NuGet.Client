@@ -40,6 +40,8 @@
   <Tools:FontSizeConverter
     Scale="155"
     x:Key="Font155PercentSizeConverter" />
+  <Tools:VersionToStringConverter
+    x:Key="VersionToStringConverter" />
 
   <DataTemplate
     DataType="{x:Type Tools:PackageDependencyMetadata}">

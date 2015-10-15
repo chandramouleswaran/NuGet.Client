@@ -123,7 +123,7 @@
   <data name="Action_Install" xml:space="preserve">
     <value>Install</value>
   </data>
-  <data name="Action_Uninstall" xml:space="preserve">
+  <data name="Button_Uninstall" xml:space="preserve">
     <value>Uninstall</value>
   </data>
   <data name="DependencyBehavior_Highest" xml:space="preserve">
@@ -417,7 +417,7 @@ Packages installed into Website projects will not be restored during build. Cons
   <data name="Action_Downgrade" xml:space="preserve">
     <value>Downgrade</value>
   </data>
-  <data name="Action_Upgrade" xml:space="preserve">
+  <data name="Button_Upgrade" xml:space="preserve">
     <value>Upgrade</value>
   </data>
   <data name="Action_Update" xml:space="preserve">
@@ -467,5 +467,8 @@ Packages installed into Website projects will not be restored during build. Cons
   </data>
   <data name="ToolTip_LatestVersion" xml:space="preserve">
     <value>Latest version: {0}</value>
+  </data>
+  <data name="Label_InstalledColon" xml:space="preserve">
+    <value>Installed:</value>
   </data>
 </root>

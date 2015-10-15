@@ -180,6 +180,7 @@ namespace NuGet.PackageManagement.UI
         {
             Actions = new List<string>();
 
+            /* !!!
             if (CanInstall())
             {
                 Actions.Add(Resources.Action_Install);
@@ -226,7 +227,7 @@ namespace NuGet.PackageManagement.UI
             {
                 SelectedActionIsInstall = false;
             }
-
+            */
             OnPropertyChanged(nameof(Actions));
         }
 
@@ -276,7 +277,7 @@ namespace NuGet.PackageManagement.UI
             set
             {
                 _selectedAction = value;
-                SelectedActionIsInstall = (SelectedAction != Resources.Action_Uninstall);
+                SelectedActionIsInstall = (SelectedAction != Resources.Button_Uninstall);
                 CreateVersions();
                 OnPropertyChanged(nameof(SelectedAction));
             }

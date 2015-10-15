@@ -88,29 +88,11 @@ namespace NuGet.PackageManagement.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstall.
-        /// </summary>
-        public static string Action_Uninstall {
-            get {
-                return ResourceManager.GetString("Action_Uninstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
         public static string Action_Update {
             get {
                 return ResourceManager.GetString("Action_Update", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upgrade.
-        /// </summary>
-        public static string Action_Upgrade {
-            get {
-                return ResourceManager.GetString("Action_Upgrade", resourceCulture);
             }
         }
         
@@ -205,11 +187,29 @@ namespace NuGet.PackageManagement.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uninstall.
+        /// </summary>
+        public static string Button_Uninstall {
+            get {
+                return ResourceManager.GetString("Button_Uninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
         public static string Button_Update {
             get {
                 return ResourceManager.GetString("Button_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upgrade.
+        /// </summary>
+        public static string Button_Upgrade {
+            get {
+                return ResourceManager.GetString("Button_Upgrade", resourceCulture);
             }
         }
         
@@ -498,6 +498,15 @@ namespace NuGet.PackageManagement.UI {
         public static string Label_Installed {
             get {
                 return ResourceManager.GetString("Label_Installed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed:.
+        /// </summary>
+        public static string Label_InstalledColon {
+            get {
+                return ResourceManager.GetString("Label_InstalledColon", resourceCulture);
             }
         }
         

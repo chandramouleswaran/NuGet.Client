@@ -54,7 +54,7 @@ namespace NuGet.PackageManagement.UI
         public UserAction GetUserAction()
         {
             var model = (DetailControlModel)DataContext;
-            var action = model.SelectedAction == UI.Resources.Action_Uninstall ?
+            var action = model.SelectedAction == UI.Resources.Button_Uninstall ?
                 NuGetProjectActionType.Uninstall :
                 NuGetProjectActionType.Install;
 

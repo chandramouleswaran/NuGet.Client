@@ -69,7 +69,7 @@ namespace NuGet.PackageManagement.UI
         protected override void CreateVersions()
         {
             if (SelectedAction == Resources.Action_Consolidate ||
-                SelectedAction == Resources.Action_Uninstall)
+                SelectedAction == Resources.Button_Uninstall)
             {
                 _versions = _allProjects.Select(project => GetInstalledPackage(project.NuGetProject, Id))
                     .Where(package => package != null)
@@ -262,7 +262,7 @@ namespace NuGet.PackageManagement.UI
                         p.Enabled = installed == null;
                     });
             }
-            else if (SelectedAction == Resources.Action_Uninstall)
+            else if (SelectedAction == Resources.Button_Uninstall)
             {
                 // only projects that have the selected version installed are enabled
                 _allProjects.ForEach(p =>

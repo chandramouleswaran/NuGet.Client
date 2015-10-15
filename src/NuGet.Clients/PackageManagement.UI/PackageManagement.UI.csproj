@@ -160,6 +160,9 @@
     <Compile Include="Xamls\ActionsAndVersions.xaml.cs">
       <DependentUpon>ActionsAndVersions.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Xamls\ProjectAction.xaml.cs">
+      <DependentUpon>ProjectAction.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Xamls\UninstallButton.xaml.cs">
       <DependentUpon>UninstallButton.xaml</DependentUpon>
     </Compile>
@@ -231,6 +234,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Xamls\ActionsAndVersions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Xamls\ProjectAction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
