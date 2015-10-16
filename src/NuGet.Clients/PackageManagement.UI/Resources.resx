@@ -468,4 +468,7 @@ Packages installed into Website projects will not be restored during build. Cons
   <data name="ToolTip_LatestVersion" xml:space="preserve">
     <value>Latest version: {0}</value>
   </data>
+  <data name="Label_ConsiderUsing" xml:space="preserve">
+    <value>Consider using </value>
+  </data>
 </root>

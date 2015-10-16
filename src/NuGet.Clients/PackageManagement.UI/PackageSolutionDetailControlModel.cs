@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using NuGet.Packaging;
 using NuGet.ProjectManagement;
+using NuGet.VisualStudio;
 
 namespace NuGet.PackageManagement.UI
 {
@@ -22,10 +24,12 @@ namespace NuGet.PackageManagement.UI
         // the CheckAllProject() & UncheckAllProject() should be no-op.
         private bool _updatingCheckbox;
 
+        private IEnumerable<IVsPackageManagerProvider> _packageManagerProviders;
+
         // list of projects to be displayed in the UI. This list is created
         // from _allProjects based on the selected version and the status
         // of the "Show All" checkbox.
-        public List<PackageInstallationInfo> Projects { get; private set; }
+        public List<PackageInstallationInfo> Projects { get; private set; }      
 
         private bool _actionEnabled;
 
@@ -117,7 +121,8 @@ namespace NuGet.PackageManagement.UI
 
         public PackageSolutionDetailControlModel(
             ISolutionManager solutionManager,
-            IEnumerable<NuGetProject> projects)
+            IEnumerable<NuGetProject> projects,
+            IEnumerable<IVsPackageManagerProvider> packageManagerProviders)
             :
                 base(projects)
         {
@@ -125,7 +130,7 @@ namespace NuGet.PackageManagement.UI
             _solutionManager.NuGetProjectAdded += (_, __) => RefreshProjectListAfterProjectAddedRemovedOrRenamed();
             _solutionManager.NuGetProjectRemoved += (_, __) => RefreshProjectListAfterProjectAddedRemovedOrRenamed();
             _solutionManager.NuGetProjectRenamed += (_, __) => RefreshProjectListAfterProjectAddedRemovedOrRenamed();
-
+            _packageManagerProviders = packageManagerProviders;
             RefreshAllProjectList();
         }
 
@@ -136,6 +141,31 @@ namespace NuGet.PackageManagement.UI
 
             RefreshAllProjectList();
             RefreshProjectList();
+        }
+
+        private async Task<OtherPackageManagerProviders> LoadProvidersInBackground(
+            string packageId,
+            NuGetProject project)
+        {
+            var otherProviders = new List<IVsPackageManagerProvider>();
+            var projectName = NuGetProject.GetUniqueNameOrName(project);
+
+            foreach (var provider in _packageManagerProviders)
+            {
+                bool applicable = await provider.CheckForPackageAsync(
+                    packageId,
+                    projectName,
+                    CancellationToken.None);
+                if (applicable)
+                {
+                    otherProviders.Add(provider);
+                }
+            }
+
+            return new OtherPackageManagerProviders(
+                otherProviders,
+                packageId,
+                projectName);
         }
 
         // Refresh the _allProjects list.
@@ -213,6 +243,20 @@ namespace NuGet.PackageManagement.UI
                 .Select(package => package.PackageIdentity.Version)
                 .Distinct();
             return installedVersions.Count() >= 2;
+        }
+
+        protected override void OnCurrentPackageChanged()
+        {
+            if (_searchResultPackage == null)
+            {
+                return;
+            }
+
+            _allProjects.ForEach(p =>
+            {
+                p.ProvidersLoader = new Lazy<Task<OtherPackageManagerProviders>>(
+                    () => LoadProvidersInBackground(Id, p.NuGetProject));
+            });
         }
 
         private void RefreshProjectList()

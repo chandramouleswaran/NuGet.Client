@@ -167,6 +167,9 @@
                         AutomationProperties.AutomationId="id"
                         VerticalAlignment="Top"
                         Text="{Binding Id}" />
+                      <ui:PackageManagerProvidersLabel
+                        DataContext="{Binding Providers}"
+                        />
 
                       <!-- author and download count -->
                       <TextBlock

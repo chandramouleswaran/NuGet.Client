@@ -13,6 +13,7 @@ using NuGet.ProjectManagement;
 using NuGet.Protocol.Core.Types;
 using NuGet.Protocol.VisualStudio;
 using NuGet.Versioning;
+using NuGet.VisualStudio;
 using Mvs = Microsoft.VisualStudio.Shell;
 
 namespace NuGet.PackageManagement.UI
@@ -42,10 +43,13 @@ namespace NuGet.PackageManagement.UI
         // The list of packages that have updates available
         private List<UISearchMetadata> _packagesWithUpdates;
 
+        private IEnumerable<IVsPackageManagerProvider> _providers;
+
         public PackageLoader(PackageLoaderOption option,
             bool isSolution,
             NuGetPackageManager packageManager,
             IEnumerable<NuGetProject> projects,
+            IEnumerable<IVsPackageManagerProvider> providers,
             SourceRepository sourceRepository,
             string searchText)
         {
@@ -53,6 +57,7 @@ namespace NuGet.PackageManagement.UI
             _isSolution = isSolution;
             _packageManager = packageManager;
             _projects = projects.ToArray();
+            _providers = providers;
             _option = option;
             _searchText = searchText;
 
@@ -574,8 +579,14 @@ namespace NuGet.PackageManagement.UI
                 searchResultPackage.BackgroundLoader = new Lazy<Task<BackgroundLoaderResult>>(
                     () => BackgroundLoad(searchResultPackage, versionList));
 
+                if (!_isSolution)
+                {
+                    searchResultPackage.ProvidersLoader = new Lazy<Task<OtherPackageManagerProviders>>(
+                        () => LoadProvidersInBackground(searchResultPackage, _projects[0]));
+                }
+
                 // filter out prerelease version when needed.
-                if (searchResultPackage.Version.IsPrerelease &&
+                    if (searchResultPackage.Version.IsPrerelease &&
                     !_option.IncludePrerelease)
                 {
                     var value = await searchResultPackage.BackgroundLoader.Value;
@@ -608,6 +619,31 @@ namespace NuGet.PackageManagement.UI
                 HasMoreItems = results.HasMoreItems,
                 NextStartIndex = startIndex + resultCount
             };
+        }
+
+        private async Task<OtherPackageManagerProviders> LoadProvidersInBackground(
+            PackageItemListViewModel package,
+            NuGetProject project)
+        {
+            var otherProviders = new List<IVsPackageManagerProvider>();
+            var projectName = NuGetProject.GetUniqueNameOrName(project);
+
+            foreach (var provider in _providers)
+            {
+                bool applicable = await provider.CheckForPackageAsync(
+                    package.Id,
+                    projectName,
+                    CancellationToken.None);
+                if (applicable)
+                {
+                    otherProviders.Add(provider);
+                }
+            }
+
+            return new OtherPackageManagerProviders(
+                otherProviders,
+                package.Id,
+                projectName);
         }
 
         // Load info in the background

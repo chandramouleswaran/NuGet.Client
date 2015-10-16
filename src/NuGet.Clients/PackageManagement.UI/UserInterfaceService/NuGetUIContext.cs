@@ -1,8 +1,12 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using NuGet.ProjectManagement;
 using NuGet.Protocol.Core.Types;
 using NuGet.VisualStudio;
@@ -35,6 +39,23 @@ namespace NuGet.PackageManagement.UI
             OptionsPageActivator = optionsPageActivator;
             _projects = projects.ToArray();
             PackageManagerProviders = packageManagerProviders;
+
+
+            // !!! testing
+            var p = PackageManagerProviders.ToList();
+            p.Add(new MyPackageManagerProvider()
+            {
+                PackageManagerId = "test1_id",
+                PackageManagerName = "test1_name",
+                Description = "test1_description"
+            });
+            p.Add(new MyPackageManagerProvider()
+            {
+                PackageManagerId = "test2_id",
+                PackageManagerName = "test2_name",
+                Description = "test2_description"
+            });
+            PackageManagerProviders = p;
         }
 
         public ISourceRepositoryProvider SourceProvider { get; }
@@ -65,6 +86,51 @@ namespace NuGet.PackageManagement.UI
         public IEnumerable<IVsPackageManagerProvider> PackageManagerProviders
         {
             get;
+        }
+    }
+
+    // !!! testing
+    public class MyPackageManagerProvider : IVsPackageManagerProvider
+    {        
+        public string Description
+        {
+            get;
+            set;
+        }
+
+        public string PackageManagerId
+        {
+            get;
+            set;
+        }
+
+        public string PackageManagerName
+        {
+            get;
+            set;
+        }
+
+        public Task<bool> CheckForPackageAsync(string packageId, string projectName, CancellationToken token)
+        {
+            return Task.Run(() =>
+            {
+                if (packageId.StartsWith("j"))
+                {
+                    return true;
+                }
+
+                return false;
+            });
+        }
+
+        public void GoToPackage(string packageId, string projectName)
+        {
+            MessageBox.Show(
+                string.Format(
+                    "GoToPackage called. Provider {0}, id {1}, project {2}",
+                    PackageManagerName,
+                    packageId,
+                    projectName));
         }
     }
 }
